@@ -1,31 +1,47 @@
 # 🎥 Video Quality Benchmark Tool
 
-Open-source CLI tool for frame-level video quality analysis using FFmpeg + Python.
+A frame-level video quality benchmarking tool built using Python + FFmpeg (libvmaf).
 
-This tool benchmarks an encoded video against a source video using:
-
-- VMAF
-- PSNR
-- SSIM (global + frame-level)
-- Edge retention
-- Noise difference
-- Temporal flicker
-- Audio sync lag
+This tool performs deep objective quality analysis between a **source** video and an **encoded** video.
 
 ---
 
-## 🚀 Requirements
+# 🚀 Features
+
+## 🎯 Video Quality Metrics
+- VMAF (Average, Min, Std Dev, Worst Frame)
+- PSNR (Average, Std Dev, Worst Frame)
+- Global SSIM
+- Frame-level SSIM analysis
+
+## 🔬 Advanced Frame Analysis
+- Minimum SSIM detection
+- Edge retention ratio
+- Edge variance
+- Noise difference & variance
+- Temporal flicker score
+- Flicker variance
+- Motion stability score
+- Motion variance
+
+## 🔊 Audio Analysis
+- Audio sync lag (samples)
+- Audio sync lag (milliseconds)
+
+---
+
+# 🛠 Requirements
 
 - Python 3.9+
 - FFmpeg compiled with libvmaf
 
-Check FFmpeg:
+Verify FFmpeg:
 
 ```bash
 ffmpeg -filters | grep vmaf
 ```
 
-If not installed (macOS):
+If missing (macOS):
 
 ```bash
 brew install ffmpeg
@@ -33,40 +49,21 @@ brew install ffmpeg
 
 ---
 
-## 📦 Installation
-
-Clone the repository:
+# 📦 Installation
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/video-quality-benchmark.git
 cd video-quality-benchmark
-```
 
-Create virtual environment:
-
-```bash
 python3 -m venv venv
 source venv/bin/activate
-```
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## ▶️ Usage
-
-Place your files:
-
-```
-source/source.mp4
-encoded/encoded.mp4
-```
-
-Run:
+# ▶️ Usage
 
 ```bash
 python video_benchmark.py \
@@ -77,55 +74,91 @@ python video_benchmark.py \
 
 ---
 
-## 🔁 Benchmark Another Provider
-
-Simply replace the encoded file:
-
-```bash
-python video_benchmark.py \
-  --source source/source.mp4 \
-  --encoded encoded/aws_output.mp4
-```
-
----
-
-## 📊 Example Output
+# 📊 Example Output
 
 ```json
 {
-  "vmaf": 97.30,
-  "psnr": 46.98,
-  "ssim_global": 0.9917,
-  "frame_metrics": {
-      "avg_frame_ssim": 0.9865,
-      "min_frame_ssim": 0.9533,
-      "edge_retention_ratio": 3.76,
-      "avg_noise_difference": -0.047,
-      "temporal_flicker_score": 73.70
+  "video_quality": {
+    "vmaf_average": 97.30,
+    "vmaf_min": 81.30,
+    "vmaf_std": 2.54,
+    "vmaf_worst_frame_index": 59,
+    "psnr_average": 48.71,
+    "psnr_std": 5.08,
+    "psnr_worst_frame": 38.74,
+    "psnr_worst_frame_index": 893
   },
-  "audio_sync_lag_samples": -2112
+  "frame_analysis": {
+    "avg_frame_ssim": 0.9865,
+    "min_frame_ssim": 0.9533,
+    "ssim_std": 0.0071,
+    "edge_retention_ratio": 0.955,
+    "edge_variance": 75.48,
+    "avg_noise_difference": -1.32,
+    "noise_variance": 1.02,
+    "temporal_flicker_score": 1.64,
+    "flicker_variance": 6.54,
+    "motion_stability_score": 0.845,
+    "motion_variance": 0.125
+  },
+  "audio_sync": {
+    "lag_samples": 0,
+    "lag_ms": 0.0
+  }
 }
 ```
 
 ---
 
-## 🧠 How It Works
+# 🧠 Metric Interpretation Guide
 
-- Extracts frames using FFmpeg
-- Computes frame-level structural similarity
-- Uses FFmpeg libvmaf for perceptual scoring
-- Measures flicker and edge retention
-- Checks audio alignment
+## VMAF
+- 95+ → Excellent quality
+- 85–95 → Very good
+- 70–85 → Acceptable
+- <70 → Visible degradation
+
+## PSNR
+- 45+ dB → Near visually lossless
+- 35–45 dB → Good compression
+- <35 dB → Visible artifacts
+
+## SSIM
+- 0.98+ → Extremely high structural similarity
+- 0.95+ → High similarity
+
+## Edge Retention
+Measures how well spatial details are preserved after compression.
+
+## Temporal Flicker Score
+Lower value = more stable video across frames.
+
+## Motion Stability Score
+Closer to 1 = consistent motion representation.
+
+## Audio Sync
+0 ms lag = perfectly aligned audio and video.
 
 ---
 
-## ⚠️ Notes
+# 🔍 Use Cases
 
-- Large videos may take time to process.
-- For faster testing, modify frame extraction duration inside the script.
+- Compare encoder outputs (AWS vs GCP vs custom)
+- Validate transcoding pipelines
+- Regression testing for video pipelines
+- Detect flicker and motion artifacts
+- Compression quality benchmarking
 
 ---
 
-## 📄 License
+# ⚠️ Notes
+
+- Processing time depends on video duration and resolution.
+- For faster testing, reduce video duration inside the script.
+- Ensure both videos have identical resolution and framerate.
+
+---
+
+# 📄 License
 
 MIT License
