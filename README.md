@@ -15,14 +15,11 @@ This tool performs deep objective quality analysis between a **source** video an
 - Frame-level SSIM analysis
 
 ## 🔬 Advanced Frame Analysis
-- Minimum SSIM detection
-- Edge retention ratio
-- Edge variance
+- SSIM variance tracking
+- Edge retention ratio & variance
 - Noise difference & variance
-- Temporal flicker score
-- Flicker variance
-- Motion stability score
-- Motion variance
+- Temporal flicker score & variance
+- Motion stability score & variance
 
 ## 🔊 Audio Analysis
 - Audio sync lag (samples)
@@ -63,7 +60,35 @@ pip install -r requirements.txt
 
 ---
 
-# ▶️ Usage
+# 📁 Input File Structure
+
+This repository includes two empty folders:
+
+```
+source/
+encoded/
+```
+
+Place your videos as follows:
+
+- Put the original reference video inside `source/`
+- Put the encoded/transcoded video inside `encoded/`
+
+Example:
+
+```
+source/source.mp4
+encoded/encoded.mp4
+```
+
+Both videos should ideally have:
+- Same resolution
+- Same frame rate
+- Same duration
+
+---
+
+# ▶️ Run Benchmark
 
 ```bash
 python video_benchmark.py \
@@ -110,55 +135,17 @@ python video_benchmark.py \
 
 ---
 
-# 🧠 Metric Interpretation Guide
-
-## VMAF
-- 95+ → Excellent quality
-- 85–95 → Very good
-- 70–85 → Acceptable
-- <70 → Visible degradation
-
-## PSNR
-- 45+ dB → Near visually lossless
-- 35–45 dB → Good compression
-- <35 dB → Visible artifacts
-
-## SSIM
-- 0.98+ → Extremely high structural similarity
-- 0.95+ → High similarity
-
-## Edge Retention
-Measures how well spatial details are preserved after compression.
-
-## Temporal Flicker Score
-Lower value = more stable video across frames.
-
-## Motion Stability Score
-Closer to 1 = consistent motion representation.
-
-## Audio Sync
-0 ms lag = perfectly aligned audio and video.
-
----
-
 # 🔍 Use Cases
 
-- Compare encoder outputs (AWS vs GCP vs custom)
-- Validate transcoding pipelines
-- Regression testing for video pipelines
-- Detect flicker and motion artifacts
-- Compression quality benchmarking
-
----
-
-# ⚠️ Notes
-
-- Processing time depends on video duration and resolution.
-- For faster testing, reduce video duration inside the script.
-- Ensure both videos have identical resolution and framerate.
+- Encoder comparison (AWS / GCP / custom pipeline)
+- Transcoding validation
+- Video compression benchmarking
+- Quality regression testing
+- Detecting flicker and motion instability
 
 ---
 
 # 📄 License
 
 MIT License
+
